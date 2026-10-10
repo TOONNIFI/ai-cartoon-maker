@@ -1,1 +1,208 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOON NIFI - AI Cartoon Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#10111b;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:25px 12px;background:linear-gradient(135deg,#7138ff,#ed3ab4)}
+header h1{margin:0;font-size:34px}
+main{max-width:650px;margin:auto;padding:16px}
+.card{background:#1c1e2d;border:1px solid #37384b;border-radius:15px;padding:18px;margin-bottom:16px}
+label{display:block;margin:13px 0 7px}
+select,input,textarea{width:100%;padding:12px;border-radius:9px;border:1px solid #44465a;background:#111320;color:white;font-size:16px}
+button{border:0;border-radius:9px;padding:13px;background:#8955ff;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+.primary{width:100%;margin-top:14px}
+.secondary{background:#34364a;margin-top:10px}
+#story{white-space:pre-wrap;line-height:1.7}
+small,.muted{color:#b9bbcf}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🎬 TOON NIFI</h1>
+<p>AI Cartoon Story Studio</p>
+<small>Create • Imagine • Animate</small>
+</header>
+
+<main>
+<div class="card">
+<h2>✨ Create a Cartoon Story</h2>
+
+<label>Cartoon type</label>
+<select id="genre">
+<option>Funny</option>
+<option>Horror</option>
+<option>Action</option>
+<option>Adventure</option>
+<option>Fantasy</option>
+<option>Emotional</option>
+<option>Animal Cartoon</option>
+<option>Anime</option>
+</select>
+
+<label>Story language</label>
+<select id="language">
+<option>Hinglish</option>
+<option>English</option>
+<option>Hindi</option>
+</select>
+
+<label>Video format</label>
+<select id="format">
+<option>YouTube Shorts / Instagram Reels (9:16)</option>
+<option>YouTube Landscape (16:9)</option>
+</select>
+
+<button class="primary" onclick="generateStory()">🎲 Generate New Story</button>
+</div>
+
+<div class="card">
+<h2>📖 Complete Story</h2>
+<div id="story">Tap Generate New Story to create your story.</div>
+<button class="primary" onclick="copyStory()">📋 Copy Story</button>
+<button class="primary secondary" onclick="downloadStory()">⬇️ Download Story</button>
+</div>
+
+<div class="card">
+<h2>📝 Video Title & Hashtags</h2>
+<label>Video title</label>
+<input id="title" placeholder="Your video title">
+
+<label>Description and hashtags</label>
+<textarea id="description" rows="4" placeholder="Video description"></textarea>
+
+<button class="primary" onclick="generateDetails()">Generate Details</button>
+<button class="primary secondary" onclick="copyDetails()">Copy Details</button>
+</div>
+
+<div class="card">
+<h2>🎥 Next: Make the Video</h2>
+<p>1. Copy your story.</p>
+<p>2. Use an AI video generator to create cartoon scenes.</p>
+<p>3. Add voice-over, music and subtitles.</p>
+<p>4. Export your video and upload it to YouTube or Instagram.</p>
+<p class="muted">This starter app generates stories from built-in examples. Actual AI video generation and automatic uploads require connected services.</p>
+</div>
+</main>
+
+<script>
+const storyBank = {
+Funny: [
+["The Magic Mango","A boy finds a magic mango that grants wishes. He wishes for flying shoes, and they fly into the sky. The shoes land on an elephant, who starts dancing through the village. The boy wishes everyone happiness, and the whole village joins the dance."],
+["The Lazy Robot","A robot is hired to clean a house but spends the morning telling jokes. When guests arrive, it cleans at super speed and accidentally polishes the cat. The cat looks shiny, the house is spotless, and the robot becomes the family comedian."]
+],
+Horror: [
+["The Whispering Clock","At midnight, an old clock begins whispering inside an abandoned tower. A curious girl follows the sound and discovers a message warning the village about a storm. She rings the tower bell, everyone reaches safety, and the mysterious clock finally falls silent."],
+["The Empty Classroom","A student hears strange footsteps in an empty classroom. A book opens by itself and reveals a note from the old caretaker asking someone to switch off a forgotten bell. The student turns it off, the footsteps stop, and the school becomes peaceful again."]
+],
+Action: [
+["The Sky Guardian","A young hero discovers a machine stealing power from the city. With help from a flying robot, the hero reaches the control room and shuts it down. The city lights return, everyone is safe, and a new guardian rises."],
+["The Speed Hero","A young runner discovers glowing shoes that give incredible speed. When a storm damages a bridge, the runner helps people reach safety and delivers supplies to rescuers. The town celebrates the hero, who decides to use the power to help others."]
+],
+Adventure: [
+["The Lost Jungle Map","Two friends discover a mysterious jungle map. They solve three puzzles and find a chest filled with magical seeds instead of gold. They plant the seeds in their village, transforming it into a beautiful garden. The friends become the guardians of the forest."],
+["The Moon Door","A curious cat finds a silver door beneath an ancient tree. Beyond it are floating islands and a lost star. The cat helps the star return to the sky, and the door becomes a magical bridge between two worlds."]
+],
+Fantasy: [
+["The Tiny Dragon","A tiny dragon can only blow bubbles instead of fire. When a meadow needs water, the dragon uses its bubbles to carry water from a nearby lake. The meadow becomes green again, and everyone learns that being different can be a superpower."],
+["The Crystal Kingdom","A young baker finds a crystal that can restore color to a kingdom. The villagers work together to light the crystal tower. Colors return across the land, and the baker discovers that teamwork is the kingdom's greatest magic."]
+],
+Emotional: [
+["The Paper Boat","A child makes paper boats with a grandparent every rainy season. When the grandparent moves away, the child sends a boat carrying a loving message. A neighbor finds it and helps arrange a surprise reunion. The family meets again and starts their rainy-day tradition."],
+["The Little Puppy","A lonely puppy waits outside a bakery every morning. A kind baker gives it food and asks the neighbors to help find a home. A caring family adopts the puppy, and it returns to visit the bakery every weekend."]
+],
+"Animal Cartoon": [
+["The Clever Fox","A fox and rabbit argue about who is the fastest. When a little bird needs help building a nest, they work together. The bird is safe, the animals become friends, and they learn that teamwork matters more than winning."],
+["The Dancing Penguin","A penguin dreams of joining a dance festival. Everyone doubts the penguin, but it practices a special sliding dance. The crowd loves the performance, and the penguin wins the friendship award."]
+],
+Anime: [
+["The Star Apprentice","A young apprentice discovers a glowing star inside an old lantern. When darkness covers the town, the apprentice uses its light to guide everyone home. The town is safe, and the apprentice begins training to become a guardian."],
+["The Power Within","A shy student discovers a bracelet that glows whenever someone needs help. During a storm, the student uses its power to protect classmates. Everyone reaches safety, and the student discovers that true strength comes from courage."]
+]
+};
+
+let currentStory = "";
+
+function generateStory(){
+  const genre = document.getElementById("genre").value;
+  const language = document.getElementById("language").value;
+  const bank = storyBank[genre];
+  const selected = bank[Math.floor(Math.random()*bank.length)];
+  const sentences = selected[1].match(/[^.!?]+[.!?]*/g) || [selected[1]];
+  const split = Math.max(1, Math.floor(sentences.length/2));
+
+  const beginning = sentences.slice(0,1).join(" ").trim();
+  const middle = sentences.slice(1,-1).join(" ").trim() || beginning;
+  const ending = sentences.slice(-1).join(" ").trim();
+
+  let heading = ["BEGINNING","MIDDLE","FINAL ENDING"];
+  if(language === "Hindi") heading = ["शुरुआत","बीच की कहानी","अंत"];
+  if(language === "Hinglish") heading = ["SHURUAAT","BEECH KI STORY","FINAL ENDING"];
+
+  currentStory =
+    "TITLE: " + selected[0] + "\n\n" +
+    heading[0] + ":\n" + beginning + "\n\n" +
+    heading[1] + ":\n" + middle + "\n\n" +
+    heading[2] + ":\n" + ending;
+
+  if(language === "Hindi"){
+    currentStory = "शीर्षक: " + selected[0] +
+      "\n\nशुरुआत:\n" + beginning +
+      "\n\nबीच की कहानी:\n" + middle +
+      "\n\nअंत:\n" + ending +
+      "\n\nध्यान दें: कहानी का टेक्स्ट अभी अंग्रेज़ी में है। हिंदी कहानी के लिए हिंदी में कहानी लिखने वाली AI सेवा जोड़ें।";
+  }
+
+  document.getElementById("story").textContent = currentStory;
+  document.getElementById("title").value = selected[0] + " | TOON NIFI";
+  generateDetails();
+}
+
+function generateDetails(){
+  const title = document.getElementById("title").value.trim() || "Amazing Cartoon Story";
+  const genre = document.getElementById("genre").value;
+  document.getElementById("description").value =
+    "Watch this original " + genre.toLowerCase() +
+    " cartoon story with a complete ending!\n\n" +
+    "#ToonNifi #Cartoon #Animation #AIStory #Shorts";
+}
+
+async function copyStory(){
+  const text = document.getElementById("story").textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("Story copied!");
+  } catch(e) {
+    alert("Copy not available. Please select and copy the story manually.");
+  }
+}
+
+function downloadStory(){
+  const blob = new Blob([currentStory || document.getElementById("story").textContent],{type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "toon-nifi-story.txt";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function copyDetails(){
+  const text = document.getElementById("title").value + "\n\n" +
+    document.getElementById("description").value;
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("Title and hashtags copied!");
+  } catch(e) {
+    alert("Please select and copy the text manually.");
+  }
+}
+</script>
+</body>
+  </html>
+
